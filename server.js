@@ -2,7 +2,7 @@
 const path = require("path");
 const express = require("express");
 
-const app = express();
+const app = require("./api");
 
 app.use(
     express.static(
@@ -10,10 +10,4 @@ app.use(
     )
 );
 
-const port = process.env.PORT || 4087;
-app.listen(port);
-
-
-
-console.log(`http://localhost:${port}`);
 

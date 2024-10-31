@@ -1,6 +1,7 @@
 // Reference Variable to canvas
 const canvasRef = document.getElementById("chart");
 
+
 //Create the Chart Instance
 let myChart = new Chart(canvasRef, {
   //Type
@@ -20,6 +21,37 @@ let myChart = new Chart(canvasRef, {
     ],
   },
 });
+
+//Variable to track candy sold
+let candySold = {};
+
+//Function for getting candy sold
+async function getCandySold() {
+  const candySoldRawData = await fetch(`/api/candysold`);
+  const candySoldData = await candySoldRawData.json();
+
+  for(let i = 0; i < candySoldData.candySold.length; i++) {
+  const candyName = candySoldData.candySold[i];
+  candySold[candyName] = candySold[candyName] || 0;
+  candySold[candyName]++;
+  }
+  console.log(candySold);
+
+  myChart.data.labels = Object.keys(candySold);
+  myChart.data.datasets = [
+    {
+      label: "Candy Sold",
+      data: Object.values(candySold),
+
+    },
+
+  ];
+
+  myChart.update();
+}
+
+getCandySold();
+
 
 //Create an Object for Storing Chart Info
 const allCharts = {
@@ -98,6 +130,7 @@ const allCharts = {
           }
         },
       },
+
 };
 
 //console.log(Object.values(allCharts));
@@ -114,6 +147,8 @@ Object.values(allCharts).forEach(function (chart) {
   //Add the button to the actual DOM
   document.querySelector("#chartButtons").appendChild(newButton);
 });
+
+
 
 function removeDatapoint() {
     myChart.data.labels.pop();
